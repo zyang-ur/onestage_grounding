@@ -20,7 +20,6 @@ import time
 from pytorch_pretrained_bert.tokenization import BertTokenizer
 from pytorch_pretrained_bert.modeling import BertModel
 
-
 def generate_coord(batch, height, width):
     # coord = Variable(torch.zeros(batch,8,height,width).cuda())
     xv, yv = torch.meshgrid([torch.arange(0,height), torch.arange(0,width)])
@@ -41,19 +40,18 @@ def generate_coord(batch, height, width):
 
 class textcam_yolo(nn.Module):
     def __init__(self, emb_size=256, jemb_drop_out=0.1, bert_model='bert-base-uncased', \
-     coordmap=True, leaky=False, dataset=None):
-        super(textcam_yolo, self).__init__()
+     coordmap=True, leaky=False, dataset=None, light=False):
+        super(textcam_yolo_light, self).__init__()
         self.coordmap = coordmap
+        self.light = light
         self.emb_size = emb_size
         if bert_model=='bert-base-uncased':
             self.textdim=768
         else:
             self.textdim=1024
         ## Visual model
-        self.visumodel = Darknet(config_path='./model/yolov3_early.cfg')
+        self.visumodel = Darknet(config_path='./model/yolov3.cfg')
         self.visumodel.load_weights('./saved_models/yolov3.weights')
-        # self.visumodel = Darknet(config_path='./model/yolo9000.cfg')
-        # self.visumodel.load_weights('./saved_models/yolo9000.weights')
         ## Text model
         self.textmodel = BertModel.from_pretrained(bert_model)
 
@@ -75,22 +73,49 @@ class textcam_yolo(nn.Module):
         embin_size = emb_size*2
         if self.coordmap:
             embin_size+=8
-        self.fcn_emb = nn.Sequential(OrderedDict([
-            ('0', torch.nn.Sequential(
-                _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
-            ('1', torch.nn.Sequential(
-                _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
-            ('2', torch.nn.Sequential(
-                _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
-        ]))
-        self.fcn_out = nn.Sequential(OrderedDict([
-            ('0', torch.nn.Sequential(
-                nn.Conv2d(emb_size, 3*5, kernel_size=1),)),
-            ('1', torch.nn.Sequential(
-                nn.Conv2d(emb_size, 3*5, kernel_size=1),)),
-            ('2', torch.nn.Sequential(
-                nn.Conv2d(emb_size, 3*5, kernel_size=1),)),
-        ]))
+        if self.light:
+            self.fcn_emb = nn.Sequential(OrderedDict([
+                ('0', torch.nn.Sequential(
+                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                ('1', torch.nn.Sequential(
+                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                ('2', torch.nn.Sequential(
+                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+            ]))
+            self.fcn_out = nn.Sequential(OrderedDict([
+                ('0', torch.nn.Sequential(
+                    nn.Conv2d(emb_size, 3*5, kernel_size=1),)),
+                ('1', torch.nn.Sequential(
+                    nn.Conv2d(emb_size, 3*5, kernel_size=1),)),
+                ('2', torch.nn.Sequential(
+                    nn.Conv2d(emb_size, 3*5, kernel_size=1),)),
+            ]))
+        else:
+            self.fcn_emb = nn.Sequential(OrderedDict([
+                ('0', torch.nn.Sequential(
+                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
+                    _ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
+                    _ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                ('1', torch.nn.Sequential(
+                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
+                    _ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
+                    _ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                ('2', torch.nn.Sequential(
+                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
+                    _ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
+                    _ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+            ]))
+            self.fcn_out = nn.Sequential(OrderedDict([
+                ('0', torch.nn.Sequential(
+                    _ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
+                    nn.Conv2d(emb_size//2, 3*5, kernel_size=1),)),
+                ('1', torch.nn.Sequential(
+                    _ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
+                    nn.Conv2d(emb_size//2, 3*5, kernel_size=1),)),
+                ('2', torch.nn.Sequential(
+                    _ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
+                    nn.Conv2d(emb_size//2, 3*5, kernel_size=1),)),
+            ]))
 
     def forward(self, image, word_id, word_mask):
         ## Visual Module
@@ -142,17 +167,15 @@ if __name__ == "__main__":
     parser.add_argument('--data', type=str, default='../ln_data/DMS/',
                         help='path to ReferIt splits data folder')
     parser.add_argument('--dataset', default='referit', type=str,
-                        help='dataset used to train QSegNet unc')
+                        help='referit/flickr/unc/unc+/gref')
     parser.add_argument('--split', default='train', type=str,
                         help='name of the dataset split used to train')
-    parser.add_argument('--val', default=None, type=str,
-                        help='name of the dataset split used to validate')
     parser.add_argument('--time', default=20, type=int,
                         help='maximum time steps (lang length) per batch')
     parser.add_argument('--emb_size', default=256, type=int,
                         help='word embedding dimensions')
-    parser.add_argument('--lang_layers', default=3, type=int,
-                        help='number of SRU/LSTM stacked layers')
+    # parser.add_argument('--lang_layers', default=3, type=int,
+    #                     help='number of SRU/LSTM stacked layers')
 
     args = parser.parse_args()
 
@@ -167,26 +190,21 @@ if __name__ == "__main__":
             mean=[0.485, 0.456, 0.406],
             std=[0.229, 0.224, 0.225])
     ])
-    target_transform = Compose([
-    ])
 
     refer = ReferDataset(data_root=args.data,
                          dataset=args.dataset,
                          split=args.split,
                          imsize = args.size,
                          transform=input_transform,
-                         # transform=target_transform,
-                         annotation_transform=target_transform,
                          max_query_len=args.time)
 
     train_loader = DataLoader(refer, batch_size=2, shuffle=True,
                               pin_memory=True, num_workers=1)
 
-    model = textcam_yolo(emb_size=args.emb_size)
+    model = textcam_yolo_light(emb_size=args.emb_size)
 
-    for batch_idx, (imgs, masks, word_id, word_mask, bbox) in enumerate(train_loader):
+    for batch_idx, (imgs, word_id, word_mask, bbox) in enumerate(train_loader):
         image = Variable(imgs)
-        masks = Variable(masks.squeeze())
         word_id = Variable(word_id)
         word_mask = Variable(word_mask)
         bbox = Variable(bbox)

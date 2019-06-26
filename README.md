@@ -14,3 +14,5 @@ one-stage visual grounding; minial version
 	We follow dataset structure from https://github.com/BCV-Uniandes/DMS
 2. train_yolo.py is the main training and validation file; check darknet.py and textcam_yolo.py
 	for models. referit_loader.py is the used dataloader
+
+This repo is partly built on the YOLOv3 implementation (https://github.com/eriklindernoren/PyTorch-YOLOv3) and the data loader implemented by DMS (https://github.com/BCV-Uniandes/DMS).
