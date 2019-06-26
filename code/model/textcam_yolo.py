@@ -41,7 +41,7 @@ def generate_coord(batch, height, width):
 class textcam_yolo(nn.Module):
     def __init__(self, emb_size=256, jemb_drop_out=0.1, bert_model='bert-base-uncased', \
      coordmap=True, leaky=False, dataset=None, light=False):
-        super(textcam_yolo_light, self).__init__()
+        super(textcam_yolo, self).__init__()
         self.coordmap = coordmap
         self.light = light
         self.emb_size = emb_size

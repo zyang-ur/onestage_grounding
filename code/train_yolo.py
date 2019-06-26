@@ -134,7 +134,7 @@ def build_target(raw_coord, pred):
             anchor_idxs = [x + 3*scale_ii for x in [0,1,2]]
             anchors = [anchors_full[i] for i in anchor_idxs]
             scaled_anchors = [ (x[0] / (args.anchor_imsize/grid), \
-                x[1] / (args.args.anchor_imsize/grid)) for x in anchors]
+                x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             ## Get shape of gt box
             gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
@@ -150,7 +150,7 @@ def build_target(raw_coord, pred):
         anchor_idxs = [x + 3*best_scale for x in [0,1,2]]
         anchors = [anchors_full[i] for i in anchor_idxs]
         scaled_anchors = [ (x[0] / (args.anchor_imsize/grid), \
-            x[1] / (args.args.anchor_imsize/grid)) for x in anchors]
+            x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
         gi = coord_list[best_scale][ii,0].long()
         gj = coord_list[best_scale][ii,1].long()
@@ -208,6 +208,7 @@ def main():
     parser.add_argument('--ifmfb', dest='ifmfb', default=False, action='store_true', help='ifmfb')
     parser.add_argument('--coord_emb', dest='coord_emb', default=False, action='store_true', help='coord_emb')
     parser.add_argument('--test', dest='test', default=False, action='store_true', help='test')
+    parser.add_argument('--light', dest='light', default=False, action='store_true', help='if use smaller model')
 
     global args, anchors_full
     args = parser.parse_args()
@@ -282,7 +283,7 @@ def main():
                               pin_memory=True, drop_last=True, num_workers=0)
 
     ## Model
-    model = textcam_yolo(light=False, emb_size=args.emb_size, coordmap=True,\
+    model = textcam_yolo(light=args.light, emb_size=args.emb_size, coordmap=True,\
         bert_model=args.bert_model, dataset=args.dataset)
     model = torch.nn.DataParallel(model).cuda()
 
@@ -403,7 +404,7 @@ def train_epoch(train_loader, model, optimizer, epoch, size_average):
             anchor_idxs = [x + 3*best_scale_ii for x in [0,1,2]]
             anchors = [anchors_full[i] for i in anchor_idxs]
             scaled_anchors = [ (x[0] / (args.anchor_imsize/grid), \
-                x[1] / (args.args.anchor_imsize/grid)) for x in anchors]
+                x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_coord[ii,0] = F.sigmoid(pred_anchor[best_scale_ii][ii, best_n_list[ii]%3, 0, gj[ii], gi[ii]]) + gi[ii].float()
             pred_coord[ii,1] = F.sigmoid(pred_anchor[best_scale_ii][ii, best_n_list[ii]%3, 1, gj[ii], gi[ii]]) + gj[ii].float()
@@ -506,7 +507,7 @@ def validate_epoch(val_loader, model, size_average, mode='val'):
             anchor_idxs = [x + 3*best_scale for x in [0,1,2]]
             anchors = [anchors_full[i] for i in anchor_idxs]
             scaled_anchors = [ (x[0] / (args.anchor_imsize/grid), \
-                x[1] / (args.args.anchor_imsize/grid)) for x in anchors]
+                x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_conf = pred_conf_list[best_scale].view(args.batch_size,3,grid,grid).data.cpu().numpy()
 
@@ -617,7 +618,7 @@ def test_epoch(val_loader, model, size_average, mode='test'):
             anchor_idxs = [x + 3*best_scale for x in [0,1,2]]
             anchors = [anchors_full[i] for i in anchor_idxs]
             scaled_anchors = [ (x[0] / (args.anchor_imsize/grid), \
-                x[1] / (args.args.anchor_imsize/grid)) for x in anchors]
+                x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_conf = pred_conf_list[best_scale].view(1,3,grid,grid).data.cpu().numpy()
 
@@ -644,7 +645,6 @@ def test_epoch(val_loader, model, size_average, mode='test'):
         top, bottom = round(float(dh[0]) - 0.1), args.size - round(float(dh[0]) + 0.1)
         left, right = round(float(dw[0]) - 0.1), args.size - round(float(dw[0]) + 0.1)
         img_np = imgs[0,:,top:bottom,left:right].data.cpu().numpy().transpose(1,2,0)
-        mask_np = masks[top:bottom,left:right].data.cpu().numpy()
 
         ratio = float(ratio)
         new_shape = (round(img_np.shape[1] / ratio), round(img_np.shape[0] / ratio))
