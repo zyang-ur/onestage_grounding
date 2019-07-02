@@ -209,6 +209,7 @@ def main():
     parser.add_argument('--coord_emb', dest='coord_emb', default=False, action='store_true', help='coord_emb')
     parser.add_argument('--test', dest='test', default=False, action='store_true', help='test')
     parser.add_argument('--light', dest='light', default=False, action='store_true', help='if use smaller model')
+    parser.add_argument('--lstm', dest='lstm', default=False, action='store_true', help='if use lstm as language module instead of bert')
 
     global args, anchors_full
     args = parser.parse_args()
@@ -257,6 +258,7 @@ def main():
                          imsize = args.size,
                          transform=input_transform,
                          max_query_len=args.time,
+                         lstm=args.lstm,
                          augment=True)
     val_dataset = ReferDataset(data_root=args.data_root,
                          split_root=args.split_root,
@@ -264,7 +266,8 @@ def main():
                          split='val',
                          imsize = args.size,
                          transform=input_transform,
-                         max_query_len=args.time)
+                         max_query_len=args.time,
+                         lstm=args.lstm)
     ## note certain dataset does not have 'test' set:
     ## 'unc': {'train', 'val', 'trainval', 'testA', 'testB'}
     test_dataset = ReferDataset(data_root=args.data_root,
@@ -274,7 +277,8 @@ def main():
                          split='test',
                          imsize = args.size,
                          transform=input_transform,
-                         max_query_len=args.time)
+                         max_query_len=args.time,
+                         lstm=args.lstm)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,
                               pin_memory=True, drop_last=True, num_workers=args.workers)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False,
@@ -283,7 +287,11 @@ def main():
                               pin_memory=True, drop_last=True, num_workers=0)
 
     ## Model
-    model = textcam_yolo(light=args.light, emb_size=args.emb_size, coordmap=True,\
+    ## input ifcorpus=None to use bert as text encoder
+    ifcorpus = None
+    if args.lstm:
+        ifcorpus = train_dataset.corpus
+    model = textcam_yolo(corpus=ifcorpus, light=args.light, emb_size=args.emb_size, coordmap=True,\
         bert_model=args.bert_model, dataset=args.dataset)
     model = torch.nn.DataParallel(model).cuda()
 
@@ -381,6 +389,7 @@ def train_epoch(train_loader, model, optimizer, epoch, size_average):
         bbox = Variable(bbox)
         bbox = torch.clamp(bbox,min=0,max=args.size-1)
 
+        ## Note LSTM does not use word_mask
         pred_anchor = model(image, word_id, word_mask)
         ## convert gt box to center+offset format
         gt_param, gi, gj, best_n_list = build_target(bbox, pred_anchor)
@@ -476,6 +485,7 @@ def validate_epoch(val_loader, model, size_average, mode='val'):
         bbox = torch.clamp(bbox,min=0,max=args.size-1)
 
         with torch.no_grad():
+            ## Note LSTM does not use word_mask
             pred_anchor = model(image, word_id, word_mask)
         for ii in range(len(pred_anchor)):
             pred_anchor[ii] = pred_anchor[ii].view(   \
@@ -587,6 +597,7 @@ def test_epoch(val_loader, model, size_average, mode='test'):
         bbox = torch.clamp(bbox,min=0,max=args.size-1)
 
         with torch.no_grad():
+            ## Note LSTM does not use word_mask
             pred_anchor = model(image, word_id, word_mask)
         for ii in range(len(pred_anchor)):
             pred_anchor[ii] = pred_anchor[ii].view(   \

@@ -172,13 +172,14 @@ class ReferDataset(data.Dataset):
 
     def __init__(self, data_root, split_root='data', dataset='referit', imsize=256,
                  transform=None, augment=False, return_idx=False, testmode=False,
-                 split='train', max_query_len=128, bert_model='bert-base-uncased'):
+                 split='train', max_query_len=128, lstm=False, bert_model='bert-base-uncased'):
         self.images = []
         self.data_root = data_root
         self.split_root = split_root
         self.dataset = dataset
         self.imsize = imsize
         self.query_len = max_query_len
+        self.lstm = lstm
         self.corpus = Corpus()
         self.transform = transform
         self.testmode = testmode
@@ -304,16 +305,23 @@ class ReferDataset(data.Dataset):
         ## Norm, to tensor
         if self.transform is not None:
             img = self.transform(img)
-        ## encode phrase to bert input
-        examples = read_examples(phrase, idx)
-        features = convert_examples_to_features(
-            examples=examples, seq_length=self.query_len, tokenizer=self.tokenizer)
+        if self.lstm:
+            phrase = self.tokenize_phrase(phrase)
+            word_id = phrase
+            word_mask = np.zeros(word_id.shape)
+        else:
+            ## encode phrase to bert input
+            examples = read_examples(phrase, idx)
+            features = convert_examples_to_features(
+                examples=examples, seq_length=self.query_len, tokenizer=self.tokenizer)
+            word_id = features[0].input_ids
+            word_mask = features[0].input_mask
         if self.testmode:
-            return img, np.array(features[0].input_ids), np.array(features[0].input_mask), \
+            return img, np.array(word_id, dtype=int), np.array(word_mask, dtype=int), \
                 np.array(bbox, dtype=np.float32), np.array(ratio, dtype=np.float32), \
                 np.array(dw, dtype=np.float32), np.array(dh, dtype=np.float32), self.images[idx][0]
         else:
-            return img, np.array(features[0].input_ids), np.array(features[0].input_mask), \
+            return img, np.array(word_id, dtype=int), np.array(word_mask, dtype=int), \
             np.array(bbox, dtype=np.float32)
 
 if __name__ == '__main__':

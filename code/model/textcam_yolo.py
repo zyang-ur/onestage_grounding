@@ -16,7 +16,7 @@ import logging
 import json
 import re
 import time
-
+## can be commented if only use LSTM encoder
 from pytorch_pretrained_bert.tokenization import BertTokenizer
 from pytorch_pretrained_bert.modeling import BertModel
 
@@ -38,12 +38,74 @@ def generate_coord(batch, height, width):
     coord = coord.unsqueeze(0).repeat(batch,1,1,1)
     return coord
 
+class RNNEncoder(nn.Module):
+    def __init__(self, vocab_size, word_embedding_size, word_vec_size, hidden_size, bidirectional=False,
+               input_dropout_p=0, dropout_p=0, n_layers=1, rnn_type='lstm', variable_lengths=True):
+        super(RNNEncoder, self).__init__()
+        self.variable_lengths = variable_lengths
+        self.embedding = nn.Embedding(vocab_size, word_embedding_size)
+        self.input_dropout = nn.Dropout(input_dropout_p)
+        self.mlp = nn.Sequential(nn.Linear(word_embedding_size, word_vec_size), 
+                                 nn.ReLU())
+        self.rnn_type = rnn_type
+        self.rnn = getattr(nn, rnn_type.upper())(word_vec_size, hidden_size, n_layers,
+                                                 batch_first=True,
+                                                 bidirectional=bidirectional,
+                                                 dropout=dropout_p)
+        self.num_dirs = 2 if bidirectional else 1
+
+    def forward(self, input_labels):
+        """
+        Inputs:
+        - input_labels: Variable long (batch, seq_len)
+        Outputs:
+        - output  : Variable float (batch, max_len, hidden_size * num_dirs)
+        - hidden  : Variable float (batch, num_layers * num_dirs * hidden_size)
+        - embedded: Variable float (batch, max_len, word_vec_size)
+        """
+        if self.variable_lengths:
+            input_lengths = (input_labels!=0).sum(1)  # Variable (batch, )
+
+            # make ixs
+            input_lengths_list = input_lengths.data.cpu().numpy().tolist()
+            sorted_input_lengths_list = np.sort(input_lengths_list)[::-1].tolist() # list of sorted input_lengths
+            sort_ixs = np.argsort(input_lengths_list)[::-1].tolist() # list of int sort_ixs, descending
+            s2r = {s: r for r, s in enumerate(sort_ixs)} # O(n)
+            recover_ixs = [s2r[s] for s in range(len(input_lengths_list))]  # list of int recover ixs
+            assert max(input_lengths_list) == input_labels.size(1)
+
+            # move to long tensor
+            sort_ixs = input_labels.data.new(sort_ixs).long()  # Variable long
+            recover_ixs = input_labels.data.new(recover_ixs).long()  # Variable long
+
+            # sort input_labels by descending order
+            input_labels = input_labels[sort_ixs]
+
+        # embed
+        embedded = self.embedding(input_labels)  # (n, seq_len, word_embedding_size)
+        embedded = self.input_dropout(embedded)  # (n, seq_len, word_embedding_size)
+        embedded = self.mlp(embedded)            # (n, seq_len, word_vec_size)
+        if self.variable_lengths:
+            embedded = nn.utils.rnn.pack_padded_sequence(embedded, sorted_input_lengths_list, batch_first=True)
+        # forward rnn
+        output, hidden = self.rnn(embedded)
+        # recover
+        if self.variable_lengths:
+            # recover rnn
+            output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=True) # (batch, max_len, hidden)
+            output = output[recover_ixs]
+        sent_output = []
+        for ii in range(output.shape[0]):
+            sent_output.append(output[ii,int(input_lengths_list[ii]-1),:])
+        return torch.stack(sent_output, dim=0)
+
 class textcam_yolo(nn.Module):
-    def __init__(self, emb_size=256, jemb_drop_out=0.1, bert_model='bert-base-uncased', \
+    def __init__(self, corpus=None, emb_size=256, jemb_drop_out=0.1, bert_model='bert-base-uncased', \
      coordmap=True, leaky=False, dataset=None, light=False):
         super(textcam_yolo, self).__init__()
         self.coordmap = coordmap
         self.light = light
+        self.lstm = (corpus is not None)
         self.emb_size = emb_size
         if bert_model=='bert-base-uncased':
             self.textdim=768
@@ -53,7 +115,17 @@ class textcam_yolo(nn.Module):
         self.visumodel = Darknet(config_path='./model/yolov3.cfg')
         self.visumodel.load_weights('./saved_models/yolov3.weights')
         ## Text model
-        self.textmodel = BertModel.from_pretrained(bert_model)
+        if self.lstm:
+            self.textdim, self.embdim=1024, 512
+            self.textmodel = RNNEncoder(vocab_size=len(corpus),
+                                          word_embedding_size=self.embdim,
+                                          word_vec_size=self.textdim//2,
+                                          hidden_size=self.textdim//2,
+                                          bidirectional=True,
+                                          input_dropout_p=0.2,
+                                          variable_lengths=True)
+        else:
+            self.textmodel = BertModel.from_pretrained(bert_model)
 
         ## Mapping module
         self.mapping_visu = nn.Sequential(OrderedDict([
@@ -128,17 +200,25 @@ class textcam_yolo(nn.Module):
             fvisu[ii] = F.normalize(fvisu[ii], p=2, dim=1)
 
         ## Language Module
-        all_encoder_layers, _ = self.textmodel(word_id, token_type_ids=None, attention_mask=word_mask)
-        ## Sentence feature at the first position [cls]
-        raw_flang = (all_encoder_layers[-1][:,0,:] + all_encoder_layers[-2][:,0,:]\
-             + all_encoder_layers[-3][:,0,:] + all_encoder_layers[-4][:,0,:])/4
-        raw_flang = raw_flang.detach()
+        if self.lstm:
+            max_len = (word_id != 0).sum(1).max().data[0]
+            word_id = word_id[:, :max_len]
+            raw_flang = self.textmodel(word_id)
+        else:
+            all_encoder_layers, _ = self.textmodel(word_id, \
+                token_type_ids=None, attention_mask=word_mask)
+            ## Sentence feature at the first position [cls]
+            raw_flang = (all_encoder_layers[-1][:,0,:] + all_encoder_layers[-2][:,0,:]\
+                 + all_encoder_layers[-3][:,0,:] + all_encoder_layers[-4][:,0,:])/4
+            ## fix bert during training
+            raw_flang = raw_flang.detach()
         flang = self.mapping_lang(raw_flang)
         flang = F.normalize(flang, p=2, dim=1)
 
         flangvisu = []
         for ii in range(len(fvisu)):
-            flang_tile = flang.view(flang.size(0), flang.size(1), 1, 1).repeat(1, 1, fvisu[ii].size(2), fvisu[ii].size(3))
+            flang_tile = flang.view(flang.size(0), flang.size(1), 1, 1).\
+                repeat(1, 1, fvisu[ii].size(2), fvisu[ii].size(3))
             if self.coordmap:
                 coord = generate_coord(batch_size, fvisu[ii].size(2), fvisu[ii].size(3))
                 flangvisu.append(torch.cat([fvisu[ii], flang_tile, coord], dim=1))
