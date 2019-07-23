@@ -199,14 +199,12 @@ def main():
     parser.add_argument('--pretrain', default='', type=str, metavar='PATH',
                         help='pretrain support load state_dict that are not identical, while have no loss saved as resume')
     parser.add_argument('--optimizer', default='RMSprop', help='optimizer: sgd, adam, RMSprop')
-    parser.add_argument('--print_freq', '-p', default=1000, type=int,
+    parser.add_argument('--print_freq', '-p', default=2000, type=int,
                         metavar='N', help='print frequency (default: 1e3)')
     parser.add_argument('--savename', default='default', type=str, help='Name head for saved model')
     parser.add_argument('--save_plot', dest='save_plot', default=False, action='store_true', help='save visulization plots')
     parser.add_argument('--seed', default=13, type=int, help='random seed')
     parser.add_argument('--bert_model', default='bert-base-uncased', type=str, help='bert model')
-    parser.add_argument('--ifmfb', dest='ifmfb', default=False, action='store_true', help='ifmfb')
-    parser.add_argument('--coord_emb', dest='coord_emb', default=False, action='store_true', help='coord_emb')
     parser.add_argument('--test', dest='test', default=False, action='store_true', help='test')
     parser.add_argument('--light', dest='light', default=False, action='store_true', help='if use smaller model')
     parser.add_argument('--lstm', dest='lstm', default=False, action='store_true', help='if use lstm as language module instead of bert')
