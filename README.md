@@ -71,6 +71,7 @@ bash download_data --path $PATH_TO_STORE_THE_DATASETS
 Train the model, run the code under folder ./code. 
 Using flag --lstm to access lstm encoder, Bert is used as the default. 
 Using flag --light to access the light model.
+
     ```
     python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
       --gpu gpu_id --batch_size 32 --resume saved_models/model.pth.tar \
@@ -79,6 +80,7 @@ Using flag --light to access the light model.
 
 Evaluate the model, run the code under folder ./code. 
 Using flag --test to access test mode.
+
     ```
     python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
       --gpu gpu_id --resume saved_models/model.pth.tar \
@@ -86,13 +88,6 @@ Using flag --test to access test mode.
     ```
 
 Visulizations. Flag --save_plot will save visulizations.
-
-9. Evaluate the model on test set. Suppose the best validation checkpoint
-is 20000.
-    ```
-    python test_model.py --inc_ckpt ~/workspace/ckpt/inception_v4.ckpt\
-      --data_dir ~/dataset/mscoco/all_images --job_dir saving/model.ckpt-20000
-    ```
 
 
 ## Performance and Pre-trained Models
@@ -102,9 +97,9 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
         <tr>
             <th>Dataset</th>
             <th>Ours-LSTM</th>
-            <th>Performance (mIoU)</th>
+            <th>Performance (Accu@0.5)</th>
             <th>Ours-Bert</th>
-            <th>Performance (mIoU)</th>
+            <th>Performance (Accu@0.5)</th>
         </tr>
     </thead>
     <tbody>
@@ -133,6 +128,7 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
         <tr>
             <td>testB: 71.32</td>
         </tr>
+        <tr>
             <td rowspan=3><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
             <td>val: 72.44</td>
         </tr>
