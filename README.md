@@ -49,16 +49,16 @@ to visual grounding. For more details, please refer to our
 
 1. Clone the repository
 
-```
-git clone --recursive https://github.com/zyang-ur/onestage_grounding.git
-```
+    ```
+    git clone --recursive https://github.com/zyang-ur/onestage_grounding.git
+    ```
 
 2. Prepare the submodules and associated data
 
 * RefCOCO & ReferItGame Dataset: place the soft link of dataset folder in ./ln_data/DMS/. We follow dataset structure [DMS](from https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
-  ```bash
-  bash download_data --path $PATH_TO_STORE_THE_DATASETS
-  ```
+    ```bash
+    bash download_data --path $PATH_TO_STORE_THE_DATASETS
+    ```
 
 * Flickr30K Entities Dataset: place the soft link of dataset folder in ./ln_data/DMS/. The formated Flickr data is availble in the following link.
 
@@ -72,20 +72,20 @@ git clone --recursive https://github.com/zyang-ur/onestage_grounding.git
 Using flag --lstm to access lstm encoder, Bert is used as the default. 
 Using flag --light to access the light model.
 
-```
-python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
-  --gpu gpu_id --batch_size 32 --resume saved_models/model.pth.tar \
-  --lr 1e-4 --nb_epoch 100 --lstm
-```
+    ```
+    python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
+      --gpu gpu_id --batch_size 32 --resume saved_models/model.pth.tar \
+      --lr 1e-4 --nb_epoch 100 --lstm
+    ```
 
 4. Evaluate the model, run the code under folder ./code. 
 Using flag --test to access test mode.
 
-```
-python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
-  --gpu gpu_id --resume saved_models/model.pth.tar \
-  --lstm --test
-```
+    ```
+    python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
+      --gpu gpu_id --resume saved_models/model.pth.tar \
+      --lstm --test
+    ```
 
 5. Visulizations. Flag --save_plot will save visulizations.
 
@@ -121,21 +121,15 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
             <td rowspan=3>UNC</td>
             <td rowspan=3><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
             <td>val: 73.66</td>
-        </tr>
-        <tr>
-            <td>testA: 75.78</td>
-        </tr>
-        <tr>
-            <td>testB: 71.32</td>
-        </tr>
-        <tr>
             <td rowspan=3><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
             <td>val: 72.44</td>
         </tr>
         <tr>
+            <td>testA: 75.78</td>
             <td>testA: 75.13</td>
         </tr>
         <tr>
+            <td>testB: 71.32</td>
             <td>testB: 68.05</td>
         </tr>
     </tbody>
