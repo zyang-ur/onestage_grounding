@@ -56,9 +56,9 @@ git clone --recursive https://github.com/zyang-ur/onestage_grounding.git
 2. Prepare the submodules and associated data
 
 * RefCOCO & ReferItGame Dataset: place the soft link of dataset folder in ./ln_data/DMS/. We follow dataset structure [DMS](from https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
-```bash
-bash download_data --path $PATH_TO_STORE_THE_DATASETS
-```
+  ```bash
+  bash download_data --path $PATH_TO_STORE_THE_DATASETS
+  ```
 
 * Flickr30K Entities Dataset: place the soft link of dataset folder in ./ln_data/DMS/. The formated Flickr data is availble in the following link.
 
@@ -68,26 +68,26 @@ bash download_data --path $PATH_TO_STORE_THE_DATASETS
 
 
 ### Training
-Train the model, run the code under folder ./code. 
+3. Train the model, run the code under folder ./code. 
 Using flag --lstm to access lstm encoder, Bert is used as the default. 
 Using flag --light to access the light model.
 
-    ```
-    python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
-      --gpu gpu_id --batch_size 32 --resume saved_models/model.pth.tar \
-      --lr 1e-4 --nb_epoch 100 --lstm
-    ```
+```
+python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
+  --gpu gpu_id --batch_size 32 --resume saved_models/model.pth.tar \
+  --lr 1e-4 --nb_epoch 100 --lstm
+```
 
-Evaluate the model, run the code under folder ./code. 
+4. Evaluate the model, run the code under folder ./code. 
 Using flag --test to access test mode.
 
-    ```
-    python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
-      --gpu gpu_id --resume saved_models/model.pth.tar \
-      --lstm --test
-    ```
+```
+python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
+  --gpu gpu_id --resume saved_models/model.pth.tar \
+  --lstm --test
+```
 
-Visulizations. Flag --save_plot will save visulizations.
+5. Visulizations. Flag --save_plot will save visulizations.
 
 
 ## Performance and Pre-trained Models
