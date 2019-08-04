@@ -105,23 +105,23 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
     <tbody>
         <tr>
             <td>ReferItGame</td>
-            <td><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
+            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>58.76</td>
-            <td><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
+            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>59.58</td>
         </tr>
         <tr>
             <td>Flickr30K Entities</td>
-            <td><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
+            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>-</td>
-            <td><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
+            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>68.91</td>
         </tr>
         <tr>
             <td rowspan=3>UNC</td>
-            <td rowspan=3><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
+            <td rowspan=3><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>val: 73.66</td>
-            <td rowspan=3><a href="http://cs.rochester.edu/u/zyang39/">Weights</a></td>
+            <td rowspan=3><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>val: 72.44</td>
         </tr>
         <tr>
