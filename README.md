@@ -19,15 +19,23 @@ This repo is partly built on the YOLOv3 implementation (https://github.com/erikl
 
 
 # A Fast and Accurate One-Stage Approach to Visual Grounding
-by [Zhengyuan Yang](http://cs.rochester.edu/u/zyang39/), Boqing Gong, Liwei Wang, Wenbing Huang, Dong Yu, and [Jiebo Luo](http://cs.rochester.edu/u/jluo)
+[A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/)
+
+by [Zhengyuan Yang](http://cs.rochester.edu/u/zyang39/), [Boqing Gong](http://boqinggong.info/), [Liwei Wang](http://www.deepcv.net/), Wenbing Huang, Dong Yu, and [Jiebo Luo](http://cs.rochester.edu/u/jluo)
+
+IEEE International Conference on Computer Vision (ICCV), 2019
+
 
 ### Introduction
 We propose a simple, fast, and accurate one-stage approach 
 to visual grounding. For more details, please refer to our
 [paper](https://arxiv.org/).
 
-![alt text](http://cs.rochester.edu/u/zyang39/VG_ICCV19.jpg 
-"Framework")
+<!-- ![alt text](http://cs.rochester.edu/u/zyang39/VG_ICCV19.jpg 
+"Framework") -->
+<p align="center">
+  <img src="http://cs.rochester.edu/u/zyang39/VG_ICCV19.jpg" width="75%"/>
+</p>
 
 ### Citation
 
@@ -55,7 +63,7 @@ to visual grounding. For more details, please refer to our
 
 2. Prepare the submodules and associated data
 
-* RefCOCO & ReferItGame Dataset: place the soft link of dataset folder in ./ln_data/DMS/. We follow dataset structure [DMS](from https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
+* RefCOCO & ReferItGame Dataset: place the soft link of dataset folder in ./ln_data/DMS/. We follow dataset structure [DMS](https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
     ```bash
     bash download_data --path $PATH_TO_STORE_THE_DATASETS
     ```
@@ -113,24 +121,24 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
         <tr>
             <td>Flickr30K Entities</td>
             <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
-            <td>-</td>
+            <td>67.62</td>
             <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
-            <td>68.91</td>
+            <td>68.69</td>
         </tr>
         <tr>
             <td rowspan=3>UNC</td>
             <td rowspan=3><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
             <td>val: 73.66</td>
             <td rowspan=3><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
-            <td>val: 72.44</td>
+            <td>val: 72.05</td>
         </tr>
         <tr>
             <td>testA: 75.78</td>
-            <td>testA: 75.13</td>
+            <td>testA: 74.81</td>
         </tr>
         <tr>
             <td>testB: 71.32</td>
-            <td>testB: 68.05</td>
+            <td>testB: 67.59</td>
         </tr>
     </tbody>
 </table>
