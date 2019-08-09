@@ -38,27 +38,27 @@ to visual grounding. For more details, please refer to our
 1. Clone the repository
 
     ```
-    git clone --recursive https://github.com/zyang-ur/onestage_grounding.git
+    git clone https://github.com/zyang-ur/onestage_grounding.git
     ```
 
 2. Prepare the submodules and associated data
 
-* RefCOCO & ReferItGame Dataset: place the data or the soft link of dataset folder under ./ln_data/. We follow dataset structure [DMS](https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
+* RefCOCO & ReferItGame Dataset: place the data or the soft link of dataset folder under ``./ln_data/``. We follow dataset structure [DMS](https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
     ```bash
     bash download_data --path ./ln_data
     ```
 
-* Flickr30K Entities Dataset: place the data or the soft link of dataset folder under ./ln_data/. The formated Flickr data is availble at [[Gdrive]](https://drive.google.com/open?id=1A1iWUWgRg7wV5qwOP_QVujOO4B8U-UYB), [[One Drive]]().
+* Flickr30K Entities Dataset: place the data or the soft link of dataset folder under ``./ln_data/``. The formated Flickr data is availble at [[Gdrive]](https://drive.google.com/open?id=1A1iWUWgRg7wV5qwOP_QVujOO4B8U-UYB), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Eqgejwkq-hZIjCkhrgWbdIkB_yi3K4uqQyRCwf9CSe_zpQ?e=dtu8qF).
 
-* Data index: download the generated index files and place them in the data folder. Availble at [[Gdrive]](https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Epw5WQ_mJ-tOlAbK5LxsnrsBElWwvNdU7aus0UIzWtwgKQ?e=XHQm7F).
+* Data index: download the generated index files and place them in the ``./data`` folder. Availble at [[Gdrive]](https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Epw5WQ_mJ-tOlAbK5LxsnrsBElWwvNdU7aus0UIzWtwgKQ?e=XHQm7F).
 
-* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./saved_models. More pretrained models are availble in the performance table [[Gdrive]](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ./saved_models.
+* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ``./saved_models``. More pretrained models are availble in the performance table [[Gdrive]](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ``./saved_models``.
 
 
 ### Training
 3. Train the model, run the code under main folder. 
-Using flag --lstm to access lstm encoder, Bert is used as the default. 
-Using flag --light to access the light model.
+Using flag ``--lstm`` to access lstm encoder, Bert is used as the default. 
+Using flag ``--light`` to access the light model.
 
     ```
     python train_yolo.py --data_root ./ln_data/ --dataset referit \
@@ -67,7 +67,7 @@ Using flag --light to access the light model.
     ```
 
 4. Evaluate the model, run the code under main folder. 
-Using flag --test to access test mode.
+Using flag ``--test`` to access test mode.
 
     ```
     python train_yolo.py --data_root ./ln_data/ --dataset referit \
@@ -75,7 +75,7 @@ Using flag --test to access test mode.
       --lstm --test
     ```
 
-5. Visulizations. Flag --save_plot will save visulizations.
+5. Visulizations. Flag ``--save_plot`` will save visulizations.
 
 
 ## Performance and Pre-trained Models
