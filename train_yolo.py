@@ -240,7 +240,7 @@ def main():
     if args.savename=='default':
         args.savename = 'model_%s_batch%d'%(args.dataset,args.batch_size)
     if not os.path.exists('./logs'):
-        os.makedirs('logs')
+        os.mkdir('logs')
     logging.basicConfig(level=logging.DEBUG, filename="./logs/%s"%args.savename, filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
 
