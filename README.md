@@ -18,7 +18,7 @@ one-stage visual grounding; minial version
 This repo is partly built on the YOLOv3 implementation (https://github.com/eriklindernoren/PyTorch-YOLOv3) and the data loader implemented by DMS (https://github.com/BCV-Uniandes/DMS). -->
 
 
-# A Fast and Accurate One-Stage Approach to Visual Grounding
+# One-Stage Visual Grounding
 [A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/)
 
 by [Zhengyuan Yang](http://cs.rochester.edu/u/zyang39/), [Boqing Gong](http://boqinggong.info/), [Liwei Wang](http://www.deepcv.net/), Wenbing Huang, Dong Yu, and [Jiebo Luo](http://cs.rochester.edu/u/jluo)
@@ -63,16 +63,16 @@ to visual grounding. For more details, please refer to our
 
 2. Prepare the submodules and associated data
 
-* RefCOCO & ReferItGame Dataset: place the soft link of dataset folder in ./ln_data/DMS/. We follow dataset structure [DMS](https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
+* RefCOCO & ReferItGame Dataset: place the data or the soft link of dataset folder under ./ln_data/. We follow dataset structure [DMS](https://github.com/BCV-Uniandes/DMS). To accomplish this, the ``download_dataset.sh`` [bash script](https://github.com/BCV-Uniandes/DMS/blob/master/download_data.sh) from DMS can be used.
     ```bash
-    bash download_data --path $PATH_TO_STORE_THE_DATASETS
+    bash download_data --path ./ln_data
     ```
 
-* Flickr30K Entities Dataset: place the soft link of dataset folder in ./ln_data/DMS/. The formated Flickr data is availble in the following link.
+* Flickr30K Entities Dataset: place the data or the soft link of dataset folder under ./ln_data/. The formated Flickr data is availble at [Gdrive](https://drive.google.com/open?id=1A1iWUWgRg7wV5qwOP_QVujOO4B8U-UYB)[One Drive]().
 
-* Data index: download the generated index files and place them in the data folder. Availble at [Gdrive](https://drive.google.com/open?id=1i9fjhZ3cmn5YOxlacGMpcxWmrNnRNU4B). A copy at OneDrive is also availble.
+* Data index: download the generated index files and place them in the data folder. Availble at [Gdrive](https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ)[One Drive](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Epw5WQ_mJ-tOlAbK5LxsnrsBElWwvNdU7aus0UIzWtwgKQ?e=XHQm7F).
 
-* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./code/saved_models. More pretrained models are availble in the performance table and should also be placed in ./code/saved_models.
+* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./code/saved_models. More pretrained models are availble in the performance table [Gdrive](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7) [One Drive](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ./code/saved_models.
 
 
 ### Training
@@ -81,8 +81,8 @@ Using flag --lstm to access lstm encoder, Bert is used as the default.
 Using flag --light to access the light model.
 
     ```
-    python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
-      --gpu gpu_id --batch_size 32 --resume saved_models/model.pth.tar \
+    python train_yolo.py --data_root ../ln_data/ --dataset referit \
+      --gpu gpu_id --batch_size 32 --resume saved_models/lstm_referit_model.pth.tar \
       --lr 1e-4 --nb_epoch 100 --lstm
     ```
 
@@ -90,8 +90,8 @@ Using flag --light to access the light model.
 Using flag --test to access test mode.
 
     ```
-    python train_yolo.py --data_root ../ln_data/DMS/ --dataset referit \
-      --gpu gpu_id --resume saved_models/model.pth.tar \
+    python train_yolo.py --data_root ../ln_data/ --dataset referit \
+      --gpu gpu_id --resume saved_models/lstm_referit_model.pth.tar \
       --lstm --test
     ```
 
@@ -113,23 +113,23 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
     <tbody>
         <tr>
             <td>ReferItGame</td>
-            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
+            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Gdrive</a></td>
             <td>58.76</td>
-            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
+            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Gdrive</a></td>
             <td>59.58</td>
         </tr>
         <tr>
             <td>Flickr30K Entities</td>
-            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
+            <td><a href="https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7">One Drive</a></td>
             <td>67.62</td>
-            <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
+            <td><a href="https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7">One Drive</a></td>
             <td>68.69</td>
         </tr>
         <tr>
             <td rowspan=3>UNC</td>
-            <td rowspan=3><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
+            <td rowspan=3><!-- <a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td> -->
             <td>val: 73.66</td>
-            <td rowspan=3><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td>
+            <td rowspan=3><!-- <a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td> -->
             <td>val: 72.05</td>
         </tr>
         <tr>
