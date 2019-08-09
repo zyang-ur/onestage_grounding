@@ -115,6 +115,46 @@ def parse_model_config(path):
             module_defs[-1][key.rstrip()] = value.strip()
     return module_defs
 
+class ConvBatchNormReLU(nn.Sequential):
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride,
+        padding,
+        dilation,
+        leaky=False,
+        relu=True,
+    ):
+        super(ConvBatchNormReLU, self).__init__()
+        self.add_module(
+            "conv",
+            nn.Conv2d(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                bias=False,
+            ),
+        )
+        self.add_module(
+            "bn",
+            nn.BatchNorm2d(
+                num_features=out_channels, eps=1e-5, momentum=0.999, affine=True
+            ),
+        )
+
+        if leaky:
+            self.add_module("relu", nn.LeakyReLU(0.1))
+        elif relu:
+            self.add_module("relu", nn.ReLU())
+
+    def forward(self, x):
+        return super(ConvBatchNormReLU, self).forward(x)
+
 class MyUpsample2(nn.Module):
     def forward(self, x):
         return x[:, :, :, None, :, None].expand(-1, -1, -1, 2, -1, 2).reshape(x.size(0), x.size(1), x.size(2)*2, x.size(3)*2)

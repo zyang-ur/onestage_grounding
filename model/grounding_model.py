@@ -8,7 +8,6 @@ from torch.utils.data import TensorDataset, DataLoader, SequentialSampler
 from torch.utils.data.distributed import DistributedSampler
 
 from .darknet import *
-from .resnet import _ConvBatchNormReLU, _ResBlock, _ResBlockMG, Bottleneck, conv1x1, conv3x3
 
 import argparse
 import collections
@@ -99,10 +98,10 @@ class RNNEncoder(nn.Module):
             sent_output.append(output[ii,int(input_lengths_list[ii]-1),:])
         return torch.stack(sent_output, dim=0)
 
-class textcam_yolo(nn.Module):
+class grounding_model(nn.Module):
     def __init__(self, corpus=None, emb_size=256, jemb_drop_out=0.1, bert_model='bert-base-uncased', \
      coordmap=True, leaky=False, dataset=None, light=False):
-        super(textcam_yolo, self).__init__()
+        super(grounding_model, self).__init__()
         self.coordmap = coordmap
         self.light = light
         self.lstm = (corpus is not None)
@@ -129,9 +128,9 @@ class textcam_yolo(nn.Module):
 
         ## Mapping module
         self.mapping_visu = nn.Sequential(OrderedDict([
-            ('0', _ConvBatchNormReLU(1024, emb_size, 1, 1, 0, 1, leaky=leaky)),
-            ('1', _ConvBatchNormReLU(512, emb_size, 1, 1, 0, 1, leaky=leaky)),
-            ('2', _ConvBatchNormReLU(256, emb_size, 1, 1, 0, 1, leaky=leaky))
+            ('0', ConvBatchNormReLU(1024, emb_size, 1, 1, 0, 1, leaky=leaky)),
+            ('1', ConvBatchNormReLU(512, emb_size, 1, 1, 0, 1, leaky=leaky)),
+            ('2', ConvBatchNormReLU(256, emb_size, 1, 1, 0, 1, leaky=leaky))
         ]))
         self.mapping_lang = torch.nn.Sequential(
           nn.Linear(self.textdim, emb_size),
@@ -148,11 +147,11 @@ class textcam_yolo(nn.Module):
         if self.light:
             self.fcn_emb = nn.Sequential(OrderedDict([
                 ('0', torch.nn.Sequential(
-                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                    ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
                 ('1', torch.nn.Sequential(
-                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                    ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
                 ('2', torch.nn.Sequential(
-                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                    ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
             ]))
             self.fcn_out = nn.Sequential(OrderedDict([
                 ('0', torch.nn.Sequential(
@@ -165,27 +164,27 @@ class textcam_yolo(nn.Module):
         else:
             self.fcn_emb = nn.Sequential(OrderedDict([
                 ('0', torch.nn.Sequential(
-                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
-                    _ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
-                    _ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                    ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
                 ('1', torch.nn.Sequential(
-                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
-                    _ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
-                    _ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                    ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
                 ('2', torch.nn.Sequential(
-                    _ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
-                    _ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
-                    _ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
+                    ConvBatchNormReLU(embin_size, emb_size, 1, 1, 0, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size, 3, 1, 1, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size, 1, 1, 0, 1, leaky=leaky),)),
             ]))
             self.fcn_out = nn.Sequential(OrderedDict([
                 ('0', torch.nn.Sequential(
-                    _ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
                     nn.Conv2d(emb_size//2, 3*5, kernel_size=1),)),
                 ('1', torch.nn.Sequential(
-                    _ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
                     nn.Conv2d(emb_size//2, 3*5, kernel_size=1),)),
                 ('2', torch.nn.Sequential(
-                    _ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
+                    ConvBatchNormReLU(emb_size, emb_size//2, 1, 1, 0, 1, leaky=leaky),
                     nn.Conv2d(emb_size//2, 3*5, kernel_size=1),)),
             ]))
 
@@ -244,7 +243,7 @@ if __name__ == "__main__":
         description='Dataloader test')
     parser.add_argument('--size', default=416, type=int,
                         help='image size')
-    parser.add_argument('--data', type=str, default='../ln_data/DMS/',
+    parser.add_argument('--data', type=str, default='./ln_data/',
                         help='path to ReferIt splits data folder')
     parser.add_argument('--dataset', default='referit', type=str,
                         help='referit/flickr/unc/unc+/gref')
