@@ -68,11 +68,11 @@ to visual grounding. For more details, please refer to our
     bash download_data --path ./ln_data
     ```
 
-* Flickr30K Entities Dataset: place the data or the soft link of dataset folder under ./ln_data/. The formated Flickr data is availble at [Gdrive](https://drive.google.com/open?id=1A1iWUWgRg7wV5qwOP_QVujOO4B8U-UYB)[One Drive]().
+* Flickr30K Entities Dataset: place the data or the soft link of dataset folder under ./ln_data/. The formated Flickr data is availble at [[Gdrive]](https://drive.google.com/open?id=1A1iWUWgRg7wV5qwOP_QVujOO4B8U-UYB), [[One Drive]]().
 
-* Data index: download the generated index files and place them in the data folder. Availble at [Gdrive](https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ)[One Drive](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Epw5WQ_mJ-tOlAbK5LxsnrsBElWwvNdU7aus0UIzWtwgKQ?e=XHQm7F).
+* Data index: download the generated index files and place them in the data folder. Availble at [[Gdrive]](https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Epw5WQ_mJ-tOlAbK5LxsnrsBElWwvNdU7aus0UIzWtwgKQ?e=XHQm7F).
 
-* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./code/saved_models. More pretrained models are availble in the performance table [Gdrive](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7) [One Drive](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ./code/saved_models.
+* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./code/saved_models. More pretrained models are availble in the performance table [[Gdrive]](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ./code/saved_models.
 
 
 ### Training
@@ -126,7 +126,7 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
             <td>68.69</td>
         </tr>
         <tr>
-            <td rowspan=3>UNC</td>
+            <td rowspan=3>RefCOCO</td>
             <td rowspan=3><!-- <a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td> -->
             <td>val: 73.66</td>
             <td rowspan=3><!-- <a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Weights</a></td> -->
