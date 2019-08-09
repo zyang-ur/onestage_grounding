@@ -184,7 +184,7 @@ def main():
     parser.add_argument('--size', default=256, type=int, help='image size')
     parser.add_argument('--anchor_imsize', default=416, type=int,
                         help='scale used to calculate anchors defined in model cfg file')
-    parser.add_argument('--data_root', type=str, default='../ln_data/DMS/',
+    parser.add_argument('--data_root', type=str, default='../ln_data/',
                         help='path to ReferIt splits data folder')
     parser.add_argument('--split_root', type=str, default='data',
                         help='location of pre-parsed dataset info')
@@ -239,6 +239,8 @@ def main():
     ## save logs
     if args.savename=='default':
         args.savename = 'textyolo_%s_batch%d'%(args.dataset,args.batch_size)
+    if not os.path.exists('./logs'):
+        os.makedirs('logs')
     logging.basicConfig(level=logging.DEBUG, filename="./logs/%s"%args.savename, filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
 

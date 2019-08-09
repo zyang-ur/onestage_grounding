@@ -1,23 +1,3 @@
-<!-- ## Introduction
-one-stage visual grounding; minial version
-## preparation
-
-* Python 3.5
-* Pytorch 0.4 or higher
-* Pytorch-Bert https://github.com/huggingface/pytorch-pretrained-BERT
-* Yolov3.weights https://pjreddie.com/media/files/yolov3.weights
-* Datasets
-
-
-## Training
-1. Dataset: place the soft link of dataset folder in code/../ln_data/DMS/...
-	We follow dataset structure from https://github.com/BCV-Uniandes/DMS
-2. train_yolo.py is the main training and validation file; check darknet.py and textcam_yolo.py
-	for models. referit_loader.py is the used dataloader
-
-This repo is partly built on the YOLOv3 implementation (https://github.com/eriklindernoren/PyTorch-YOLOv3) and the data loader implemented by DMS (https://github.com/BCV-Uniandes/DMS). -->
-
-
 # One-Stage Visual Grounding
 [A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/)
 
@@ -72,25 +52,25 @@ to visual grounding. For more details, please refer to our
 
 * Data index: download the generated index files and place them in the data folder. Availble at [[Gdrive]](https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/Epw5WQ_mJ-tOlAbK5LxsnrsBElWwvNdU7aus0UIzWtwgKQ?e=XHQm7F).
 
-* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./code/saved_models. More pretrained models are availble in the performance table [[Gdrive]](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ./code/saved_models.
+* Model weights: download the pretrained model of [Yolov3](https://pjreddie.com/media/files/yolov3.weights) and place the file in ./saved_models. More pretrained models are availble in the performance table [[Gdrive]](https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7), [[One Drive]](https://uofr-my.sharepoint.com/:f:/g/personal/zyang39_ur_rochester_edu/ErrXDnw1igFGghwbH5daoKwBX4vtE_erXbOo1JGnraCE4Q?e=tQUCk7) and should also be placed in ./saved_models.
 
 
 ### Training
-3. Train the model, run the code under folder ./code. 
+3. Train the model, run the code under main folder. 
 Using flag --lstm to access lstm encoder, Bert is used as the default. 
 Using flag --light to access the light model.
 
     ```
-    python train_yolo.py --data_root ../ln_data/ --dataset referit \
+    python train_yolo.py --data_root ./ln_data/ --dataset referit \
       --gpu gpu_id --batch_size 32 --resume saved_models/lstm_referit_model.pth.tar \
       --lr 1e-4 --nb_epoch 100 --lstm
     ```
 
-4. Evaluate the model, run the code under folder ./code. 
+4. Evaluate the model, run the code under main folder. 
 Using flag --test to access test mode.
 
     ```
-    python train_yolo.py --data_root ../ln_data/ --dataset referit \
+    python train_yolo.py --data_root ./ln_data/ --dataset referit \
       --gpu gpu_id --resume saved_models/lstm_referit_model.pth.tar \
       --lstm --test
     ```
