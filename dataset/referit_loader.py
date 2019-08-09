@@ -204,7 +204,7 @@ class ReferDataset(data.Dataset):
         if not self.exists_dataset():
             # self.process_dataset()
             print('Please download index cache to data folder: \n \
-                https://drive.google.com/open?id=1i9fjhZ3cmn5YOxlacGMpcxWmrNnRNU4B')
+                https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ')
             exit(0)
 
         dataset_path = osp.join(self.split_root, self.dataset)
@@ -334,7 +334,7 @@ if __name__ == '__main__':
         description='Dataloader test')
     parser.add_argument('--size', default=416, type=int,
                         help='image size')
-    parser.add_argument('--data', type=str, default='../ln_data/DMS/',
+    parser.add_argument('--data', type=str, default='./ln_data/',
                         help='path to ReferIt splits data folder')
     parser.add_argument('--dataset', default='referit', type=str,
                         help='referit/flickr/unc/unc+/gref')

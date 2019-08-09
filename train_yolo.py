@@ -36,7 +36,7 @@ from torchvision.transforms import Compose, ToTensor, Normalize
 from utils.transforms import ResizeImage, ResizeAnnotation
 
 from dataset.referit_loader import *
-from model.textcam_yolo import *
+from model.grounding_model import *
 from utils.parsing_metrics import *
 from utils.utils import *
 
@@ -96,7 +96,7 @@ def adjust_learning_rate(optimizer, i_iter):
         
 def save_checkpoint(state, is_best, filename='default'):
     if filename=='default':
-        filename = 'textyolo_%s_batch%d'%(args.dataset,args.batch_size)
+        filename = 'model_%s_batch%d'%(args.dataset,args.batch_size)
 
     checkpoint_name = './saved_models/%s_checkpoint.pth.tar'%(filename)
     best_name = './saved_models/%s_model_best.pth.tar'%(filename)
@@ -184,7 +184,7 @@ def main():
     parser.add_argument('--size', default=256, type=int, help='image size')
     parser.add_argument('--anchor_imsize', default=416, type=int,
                         help='scale used to calculate anchors defined in model cfg file')
-    parser.add_argument('--data_root', type=str, default='../ln_data/',
+    parser.add_argument('--data_root', type=str, default='./ln_data/',
                         help='path to ReferIt splits data folder')
     parser.add_argument('--split_root', type=str, default='data',
                         help='location of pre-parsed dataset info')
@@ -238,7 +238,7 @@ def main():
 
     ## save logs
     if args.savename=='default':
-        args.savename = 'textyolo_%s_batch%d'%(args.dataset,args.batch_size)
+        args.savename = 'model_%s_batch%d'%(args.dataset,args.batch_size)
     if not os.path.exists('./logs'):
         os.makedirs('logs')
     logging.basicConfig(level=logging.DEBUG, filename="./logs/%s"%args.savename, filemode="a+",
@@ -291,7 +291,7 @@ def main():
     ifcorpus = None
     if args.lstm:
         ifcorpus = train_dataset.corpus
-    model = textcam_yolo(corpus=ifcorpus, light=args.light, emb_size=args.emb_size, coordmap=True,\
+    model = grounding_model(corpus=ifcorpus, light=args.light, emb_size=args.emb_size, coordmap=True,\
         bert_model=args.bert_model, dataset=args.dataset)
     model = torch.nn.DataParallel(model).cuda()
 
