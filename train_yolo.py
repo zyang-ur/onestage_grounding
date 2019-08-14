@@ -520,6 +520,7 @@ def validate_epoch(val_loader, model, size_average, mode='val'):
                 x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_conf = pred_conf_list[best_scale].view(args.batch_size,3,grid,grid).data.cpu().numpy()
+            max_conf = max_conf.data.cpu().numpy()
 
             # print(max_conf[ii],max_loc[ii],pred_conf_list[best_scale][ii,max_loc[ii]-64])
             (best_n, gj, gi) = np.where(pred_conf[ii,:,:,:] == max_conf[ii])
@@ -632,6 +633,7 @@ def test_epoch(val_loader, model, size_average, mode='test'):
                 x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_conf = pred_conf_list[best_scale].view(1,3,grid,grid).data.cpu().numpy()
+            max_conf = max_conf.data.cpu().numpy()
 
             # print(max_conf[ii],max_loc[ii],pred_conf_list[best_scale][ii,max_loc[ii]-64])
             (best_n, gj, gi) = np.where(pred_conf[ii,:,:,:] == max_conf[ii])

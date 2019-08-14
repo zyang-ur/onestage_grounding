@@ -200,7 +200,8 @@ class grounding_model(nn.Module):
 
         ## Language Module
         if self.lstm:
-            max_len = (word_id != 0).sum(1).max().data[0]
+            # max_len = (word_id != 0).sum(1).max().data[0]
+            max_len = (word_id != 0).sum(1).max().item()
             word_id = word_id[:, :max_len]
             raw_flang = self.textmodel(word_id)
         else:
