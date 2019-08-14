@@ -109,7 +109,7 @@ Please check the detailed experiment settings in our [paper](https://arxiv.org/)
             <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Gdrive</a></td>
             <td>58.76</td>
             <td><a href="https://drive.google.com/open?id=1-DXvhEbWQtVWAUT_-G19zlz-0Ekcj5d7">Gdrive</a></td>
-            <td>59.58</td>
+            <td>59.30</td>
         </tr>
         <tr>
             <td>Flickr30K Entities</td>
