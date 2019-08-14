@@ -112,45 +112,45 @@ COCO_FILE=${COCO_DATA_URL#*zips/}
 
 if [ ! -d $_arg_path ]; then
     mkdir $_arg_path
-    cd $_arg_path
-
-    mkdir referit
-    cd referit
-
-    printf "Downloading ReferIt dataset (This may take a while...)"
-    aria2c -x 8 $REFERIT_DATA_URL
-
-
-    printf "Uncompressing data..."
-    tar -xzvf $REFERIT_FILE
-    rm $REFERIT_FILE
-
-    mkdir splits
-    cd splits
-
-    printf "Downloading ReferIt Splits..."
-    aria2c -x 8 $REFERIT_SPLITS_URL
-
-    tar -xjvf $SPLIT_FILE
-    rm $SPLIT_FILE
-
-    cd ../..
-
-    mkdir -p other/images/mscoco/images
-    cd other/images/mscoco/images
-
-    printf "Downloading MS COCO 2014 train images (This may take a while...)"
-    aria2c -x 8 $COCO_DATA_URL
-
-    unzip $COCO_FILE
-    rm $COCO_FILE
-
-    cd ../../..
-    printf "Downloading refcoco, refcocog and refcoco+ splits..."
-    aria2c -x 8 $REFCOCO_URL
-    aria2c -x 8 $REFCOCO_PLUS_URL
-    aria2c -x 8 $REFCOCOG_URL
-
-    unzip "*.zip"
-    rm *.zip
 fi
+cd $_arg_path
+
+mkdir referit
+cd referit
+
+printf "Downloading ReferIt dataset (This may take a while...)"
+aria2c -x 8 $REFERIT_DATA_URL
+
+
+printf "Uncompressing data..."
+tar -xzvf $REFERIT_FILE
+rm $REFERIT_FILE
+
+mkdir splits
+cd splits
+
+printf "Downloading ReferIt Splits..."
+aria2c -x 8 $REFERIT_SPLITS_URL
+
+tar -xjvf $SPLIT_FILE
+rm $SPLIT_FILE
+
+cd ../..
+
+mkdir -p other/images/mscoco/images
+cd other/images/mscoco/images
+
+printf "Downloading MS COCO 2014 train images (This may take a while...)"
+aria2c -x 8 $COCO_DATA_URL
+
+unzip $COCO_FILE
+rm $COCO_FILE
+
+cd ../../..
+printf "Downloading refcoco, refcocog and refcoco+ splits..."
+aria2c -x 8 $REFCOCO_URL
+aria2c -x 8 $REFCOCO_PLUS_URL
+aria2c -x 8 $REFCOCOG_URL
+
+unzip "*.zip"
+rm *.zip
