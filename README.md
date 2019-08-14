@@ -30,7 +30,7 @@ to visual grounding. For more details, please refer to our
 ### Prerequisites
 
 * Python 3.5 (3.6 tested)
-* Pytorch 0.4.1 (1.0.0 tested)
+* Pytorch 0.4.1
 * Others ([Pytorch-Bert](https://pypi.org/project/pytorch-pretrained-bert/), OpenCV, Matplotlib, scipy, h5py, etc.)
 
 ## Installation
