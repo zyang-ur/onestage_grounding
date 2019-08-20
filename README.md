@@ -1,5 +1,5 @@
 # One-Stage Visual Grounding
-[A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/)
+[A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/pdf/1908.06354.pdf)
 
 by [Zhengyuan Yang](http://cs.rochester.edu/u/zyang39/), [Boqing Gong](http://boqinggong.info/), [Liwei Wang](http://www.deepcv.net/), Wenbing Huang, Dong Yu, and [Jiebo Luo](http://cs.rochester.edu/u/jluo)
 
@@ -9,7 +9,7 @@ IEEE International Conference on Computer Vision (ICCV), 2019
 ### Introduction
 We propose a simple, fast, and accurate one-stage approach 
 to visual grounding. For more details, please refer to our
-[paper](https://arxiv.org/).
+[paper](https://arxiv.org/pdf/1908.06354.pdf).
 
 <!-- ![alt text](http://cs.rochester.edu/u/zyang39/VG_ICCV19.jpg 
 "Framework") -->
@@ -92,7 +92,7 @@ Using flag ``--test`` to access test mode.
 
 
 ## Performance and Pre-trained Models
-Please check the detailed experiment settings in our [paper](https://arxiv.org/).
+Please check the detailed experiment settings in our [paper](https://arxiv.org/pdf/1908.06354.pdf).
 <table>
     <thead>
         <tr>
