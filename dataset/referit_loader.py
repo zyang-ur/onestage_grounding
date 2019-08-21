@@ -17,7 +17,7 @@ import tqdm
 import math
 import torch
 import random
-import h5py
+# import h5py
 import numpy as np
 import os.path as osp
 import scipy.io as sio
