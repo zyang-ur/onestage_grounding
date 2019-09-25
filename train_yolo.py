@@ -353,7 +353,7 @@ def main():
         exit(0)
     for epoch in range(args.nb_epoch):
         adjust_learning_rate(optimizer, epoch)
-        # train_epoch(train_loader, model, optimizer, epoch, args.size_average)
+        train_epoch(train_loader, model, optimizer, epoch, args.size_average)
         accu_new = validate_epoch(val_loader, model, args.size_average)
         ## remember best accu and save checkpoint
         is_best = accu_new > best_accu
