@@ -353,7 +353,7 @@ def main():
         exit(0)
     for epoch in range(args.nb_epoch):
         adjust_learning_rate(optimizer, epoch)
-        train_epoch(train_loader, model, optimizer, epoch, args.size_average)
+        # train_epoch(train_loader, model, optimizer, epoch, args.size_average)
         accu_new = validate_epoch(val_loader, model, args.size_average)
         ## remember best accu and save checkpoint
         is_best = accu_new > best_accu
@@ -520,10 +520,10 @@ def validate_epoch(val_loader, model, size_average, mode='val'):
                 x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_conf = pred_conf_list[best_scale].view(args.batch_size,3,grid,grid).data.cpu().numpy()
-            max_conf = max_conf.data.cpu().numpy()
+            max_conf_ii = max_conf.data.cpu().numpy()
 
             # print(max_conf[ii],max_loc[ii],pred_conf_list[best_scale][ii,max_loc[ii]-64])
-            (best_n, gj, gi) = np.where(pred_conf[ii,:,:,:] == max_conf[ii])
+            (best_n, gj, gi) = np.where(pred_conf[ii,:,:,:] == max_conf_ii[ii])
             best_n, gi, gj = int(best_n[0]), int(gi[0]), int(gj[0])
             pred_gi.append(gi)
             pred_gj.append(gj)
@@ -633,10 +633,10 @@ def test_epoch(val_loader, model, size_average, mode='test'):
                 x[1] / (args.anchor_imsize/grid)) for x in anchors]
 
             pred_conf = pred_conf_list[best_scale].view(1,3,grid,grid).data.cpu().numpy()
-            max_conf = max_conf.data.cpu().numpy()
+            max_conf_ii = max_conf.data.cpu().numpy()
 
             # print(max_conf[ii],max_loc[ii],pred_conf_list[best_scale][ii,max_loc[ii]-64])
-            (best_n, gj, gi) = np.where(pred_conf[ii,:,:,:] == max_conf[ii])
+            (best_n, gj, gi) = np.where(pred_conf[ii,:,:,:] == max_conf_ii[ii])
             best_n, gi, gj = int(best_n[0]), int(gi[0]), int(gj[0])
             pred_gi.append(gi)
             pred_gj.append(gj)
