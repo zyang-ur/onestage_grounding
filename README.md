@@ -1,4 +1,7 @@
 # One-Stage Visual Grounding
+ New: Our recent work on One-stage VG is available at [ReSC](https://github.com/zyang-ur/ReSC)
+
+
 [A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/pdf/1908.06354.pdf)
 
 by [Zhengyuan Yang](http://cs.rochester.edu/u/zyang39/), [Boqing Gong](http://boqinggong.info/), [Liwei Wang](http://www.deepcv.net/), Wenbing Huang, Dong Yu, and [Jiebo Luo](http://cs.rochester.edu/u/jluo)
