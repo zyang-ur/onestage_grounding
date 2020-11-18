@@ -1,5 +1,5 @@
 # One-Stage Visual Grounding
- New: Our recent work on One-stage VG is available at [ReSC](https://github.com/zyang-ur/ReSC)
+**\*\*\*\*\* New: Our recent work on One-stage VG is available at [ReSC](https://github.com/zyang-ur/ReSC).\*\*\*\*\***
 
 
 [A Fast and Accurate One-Stage Approach to Visual Grounding](https://arxiv.org/pdf/1908.06354.pdf)
